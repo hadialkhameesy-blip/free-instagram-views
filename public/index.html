@@ -32,7 +32,6 @@
       </button>
     </div>
 
-    <!-- شريط التقدم والعداد التنازلي -->
     <div id="progressArea" class="hidden mt-6 text-center">
       <p id="timerText" class="text-xs text-slate-400 mb-2">جاري المعالجة... يرجى الانتظار <span id="seconds">15</span> ثانية</p>
       <div class="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
@@ -40,7 +39,6 @@
       </div>
     </div>
 
-    <!-- رسالة النتيجة أو الخطأ -->
     <div id="resultMsg" class="mt-4 text-sm font-medium hidden"></div>
   </div>
 
@@ -81,7 +79,15 @@
               body: JSON.stringify({ link })
             });
 
-            const data = await res.json();
+            const text = await res.text();
+            let data;
+
+            try {
+              data = JSON.parse(text);
+            } catch (e) {
+              data = { error: `خطأ من السيرفر (كود ${res.status}): ${text.substring(0, 150)}` };
+            }
+
             progressArea.classList.add('hidden');
 
             if (res.ok && data.success) {
@@ -89,12 +95,12 @@
               resultMsg.innerText = `✅ تم إرسال 100 مشاهدة بنجاح! رقم العملية: ${data.orderId}`;
             } else {
               resultMsg.className = "mt-4 text-sm font-medium text-rose-400 p-3 bg-rose-500/10 rounded-lg border border-rose-500/20";
-              resultMsg.innerText = `❌ ${data.error || 'حدث خطأ غير معروف أثناء معالجة الطلب.'}`;
+              resultMsg.innerText = `❌ ${data.error || 'حدث خطأ أثناء معالجة الطلب.'}`;
             }
           } catch (err) {
             progressArea.classList.add('hidden');
             resultMsg.className = "mt-4 text-sm font-medium text-rose-400 p-3 bg-rose-500/10 rounded-lg border border-rose-500/20";
-            resultMsg.innerText = `❌ تعذر الاتصال بالخادم الداخلي للموقع، يرجى إعادة المحاولة.`;
+            resultMsg.innerText = `❌ تعذر الوصول للخادم: ${err.message}`;
           }
 
           resultMsg.classList.remove('hidden');
