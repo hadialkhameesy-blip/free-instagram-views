@@ -18,9 +18,9 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'يرجى إدخال رابط منشور إنستغرام أو ريلز.' });
     }
 
-    const SMM_API_URL = 'https://my.smm-panel.com/api/v2';
-    const SMM_API_KEY = '4016b78781c5e214095d70da41fafca4';
-    const SERVICE_ID = '531';
+    const SMM_API_URL = 'https://bulkfollows.com/api/v2';
+    const SMM_API_KEY = '7c3fbf2eb3caeb31532e5ed13d9b8e26';
+    const SERVICE_ID = '237'; // يمكنك التبديل بين 237 أو 4227 متى ما أردت
 
     const formData = new URLSearchParams();
     formData.append('key', SMM_API_KEY);
