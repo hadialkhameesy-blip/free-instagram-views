@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
 
     const SMM_API_URL = 'https://my.smm-panel.com/api/v2';
     const SMM_API_KEY = '4016b78781c5e214095d70da41fafca4';
-    const SERVICE_ID = '531';
+    const SERVICE_ID = '567';
 
     const formData = new URLSearchParams();
     formData.append('key', SMM_API_KEY);
