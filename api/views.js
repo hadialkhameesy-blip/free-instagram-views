@@ -1,3 +1,4 @@
+// api/view.js
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ success: false, message: 'Method not allowed' });
@@ -34,6 +35,28 @@ export default async function handler(req, res) {
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
                 });
 
+                const responseText = await response.text();
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    data = { status: "error", message: "استجابة غير صالحة من المزود", raw: responseText };
+                }
+
+                results.push({ link, response: data });
+            } catch (err) {
+                results.push({ link, error: err.message });
+            }
+        }
+
+        return res.status(200).json({ success: true, results });
+
+    } catch (error) {
+        console.error('API Error:', error);
+        return res.status(500).json({ success: false, message: 'خطأ في السيرفر: ' + error.message });
+    }
+}
                 const responseText = await response.text();
                 
                 // التأكد أن الرد عبارة عن JSON صالح قبل تحويله
