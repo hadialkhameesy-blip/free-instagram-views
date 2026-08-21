@@ -18,9 +18,9 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'يرجى إدخال رابط منشور إنستغرام أو ريلز.' });
     }
 
-    const SMM_API_URL = 'https://bulkfollows.com/api/v2';
-    const SMM_API_KEY = '7c3fbf2eb3caeb31532e5ed13d9b8e26';
-    const SERVICE_ID = '237'; // يمكنك التبديل بين 237 أو 4227 متى ما أردت
+    const SMM_API_URL = 'https://my.smm-panel.com/api/v2';
+    const SMM_API_KEY = '4016b78781c5e214095d70da41fafca4';
+    const SERVICE_ID = '531';
 
     const formData = new URLSearchParams();
     formData.append('key', SMM_API_KEY);
@@ -34,6 +34,32 @@ module.exports = async (req, res) => {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
+      body: formData.toString()
+    });
+
+    const textResponse = await response.text();
+    let data;
+
+    try {
+      data = JSON.parse(textResponse);
+    } catch (e) {
+      return res.status(502).json({ 
+        error: `رد غير متوقع من المزود: ${textResponse.substring(0, 100)}` 
+      });
+    }
+
+    if (data && data.order) {
+      return res.status(200).json({ success: true, orderId: data.order });
+    } else {
+      return res.status(400).json({ 
+        error: data.error || 'تعذر إتمام الطلب من المزود (تأكد من توفر رصيد في الحساب).' 
+      });
+    }
+
+  } catch (error) {
+    return res.status(500).json({ error: `خطأ بالخادم: ${error.message}` });
+  }
+};
       body: formData.toString()
     });
 
